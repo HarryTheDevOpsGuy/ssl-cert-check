@@ -322,7 +322,10 @@ MKTEMP=$(command -v mktemp)
 FIND=$(command -v find)
 
 # Try to find a mail client
-if [ -f /usr/bin/mailx ]; then
+if [ -f /usr/bin/msend ]; then
+    MAIL="/usr/bin/msend"
+    MAILMODE="msend"
+elif [ -f /usr/bin/mailx ]; then
     MAIL="/usr/bin/mailx"
     MAILMODE="mailx"
 elif [ -f /bin/mail ]; then
@@ -392,6 +395,9 @@ send_mail() {
     MSG="${4}"
 
     case "${MAILMODE}" in
+        "msend")
+            ${MAIL} -t $TO -s "$SUBJECT" -m "$MSG"
+            ;;
         "mail")
             echo "$MSG" | "${MAIL}" -r "$FROM" -s "$SUBJECT" "$TO"
             ;;
